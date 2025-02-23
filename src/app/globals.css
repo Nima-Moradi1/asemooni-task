@@ -71,3 +71,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .form {
+    @apply flex flex-col items-center gap-y-5 w-full max-w-lg mx-auto *:text-sm *:md:text-base;
+  }
+  .h1 {
+    @apply text-xl lg:text-2xl font-bold mb-10;
+  } 
+  .textField__input {
+    @apply w-full text-xs lg:text-base py-3 px-4 rounded-xl border focus:border-primary  outline-none duration-200 transition-all ease-in-out hover:border-primary focus:outline-none;
+  }
+}
+* {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+*::-webkit-scrollbar { 
+  display: none;
+}
+.spinner-mini {
+  margin: 0;
+  width: 10px;
+  padding: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgb(var(--color-primary-400));
+  border-right-color: transparent;
+  animation: rotate 1s infinite linear;
+}
