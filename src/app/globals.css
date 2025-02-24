@@ -92,13 +92,18 @@
 *::-webkit-scrollbar { 
   display: none;
 }
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
 .spinner-mini {
   margin: 0;
   width: 10px;
   padding: 10px;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 2px solid rgb(var(--color-primary-400));
+  border: 2px solid white;
   border-right-color: transparent;
   animation: rotate 1s infinite linear;
 }
