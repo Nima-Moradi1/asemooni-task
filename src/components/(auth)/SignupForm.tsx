@@ -127,7 +127,7 @@ const SignupForm = () => {
         <RHFTextField name='firstName' label='نام' register={register} errors={errors} isRequired/>
             <RHFTextField name='lastName' label='نام خانوادگی' register={register} errors={errors} isRequired/>
             <RHFTextField dir='ltr' name='email' label='ایمیل' register={register} errors={errors} isRequired/>
-            <div className='relative w-full bg-red-300 '>
+            <div className='relative w-full '>
             <RHFTextField type={showPassword ? "text" : "password"}
              dir='ltr' name='password' label='پسورد' register={register} errors={errors} isRequired/>
              <Button
