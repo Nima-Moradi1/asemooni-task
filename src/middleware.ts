@@ -22,6 +22,8 @@ export const middleware = (request: Request) => {
 }
 if (!userToken && pathname.startsWith('/') && !pathname.startsWith('/auth')) {
     return NextResponse.redirect(new URL('/auth/login' , url))
+}if (!userToken && pathname.startsWith('/profile')) {
+    return NextResponse.redirect(new URL('/auth/login' , url))
 }
 return NextResponse.next();
 
@@ -30,5 +32,5 @@ return NextResponse.next();
 
 
 export const config = {
-    matcher : ["/auth/:path*" , "/"]
+    matcher : ["/auth/:path*" , "/" , "/profile/:path*"]
 }
