@@ -12,6 +12,7 @@ import SpinnerMini from '../ui/SpinnerMini'
 import { useAuthStore, useUserStore } from '../../store/authStore'
 import { SignupProps } from './SignupForm'
 import { useRouter } from 'next/navigation'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
 interface LoginProps {
     email: string,
@@ -20,6 +21,7 @@ interface LoginProps {
 
 const LoginForm = () => {
 
+    const [showPassword, setShowPassword] = React.useState(false);
     const router = useRouter()
     const {isLogging,userLogin} = useUserLogin()
 
@@ -48,8 +50,18 @@ const LoginForm = () => {
         <form className='form grid grid-cols-1 gap-4 '
          onSubmit={handleSubmit(loginHandler)}>
             <RHFTextField dir='ltr' name='email' label='ایمیل' register={register} errors={errors} isRequired/>
-            <RHFTextField dir='ltr' name='password' label='پسورد' register={register} errors={errors} isRequired/>             
-            <Button disabled={Object.keys(errors).length > 0 || isLogging} type='submit' className='w-full mt-5'>
+            <div className='relative '>
+            <RHFTextField type={showPassword ? "text" : "password"}
+             dir='ltr' name='password' label='پسورد' register={register} errors={errors} isRequired/>
+             <Button
+             type='button'
+              onClick={()=> setShowPassword(!showPassword)} size='icon' variant='ghost'
+             className={`${ errors['password'] ? "bottom-7 right-1" : "bottom-1 right-1 " } absolute flex items-center text-secondary-foreground lg:my-1`}
+             >
+                {showPassword ? <EyeIcon/> : <EyeSlashIcon/>}
+             </Button>
+            </div>           
+             <Button disabled={Object.keys(errors).length > 0 || isLogging} type='submit' className='w-full mt-5'>
                 {isLogging ? <SpinnerMini/> : 'ورود به حساب'}
             </Button>
         </form>
