@@ -11,7 +11,6 @@ const Header = () => {
 const user = useUserStore((state) => state.user)
 const userData = user ? user : null
  const [mounted, setMounted] = React.useState(false);
-
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -19,7 +18,7 @@ const userData = user ? user : null
   if (!mounted) return null;
     return (
         <>
-        <header className={`"opacity-100 blur-0" } bg-inherit mb-10 sticky top-0 transition-all duration-300 backdrop-blur-xl max-w-screen-xl mx-auto`}>
+        <header className="opacity-100 mb-10 sticky top-0 transition-all duration-300 backdrop-blur-xl z-50 max-w-screen-xl mx-auto ">
             <nav>
                 <ul className="flex items-center p-2 justify-between container xl:max-w-screen-xl">
                     <li>

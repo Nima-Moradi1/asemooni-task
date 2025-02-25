@@ -56,7 +56,7 @@ const LoginForm = () => {
         <div className='flex text-sm md:text-base gap-5 mt-10 border-b p-3 rounded-xl'>
             <p>عضو سایت نیستید ؟‌</p>
             <Link className='text-primary hover:underline'
-            href='/auth/signup'>نام نویسی در سایت</Link>
+            href='/auth/signup'>نام نویسی</Link>
         </div>
     </div>
   )

@@ -10,7 +10,7 @@ export const SignupSchema = yup.object({
     .matches(/[A-Za-z]/, 'پسورد باید حداقل یک حرف داشته باشد')
     .matches(/\d/, 'پسورد باید حداقل یک عدد داشته باشد')
     .required('پسورد الزامی است'),    phoneNumber: yup.string().matches(/^[0-9]{11}$/, 'شماره همراه نامعتبر است').required('شماره همراه الزامی است'),
-    image : yup.string().required('عکس کاور پست الزامی است')
+    image : yup.string().required('تصویر الزامی است').default('https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png')
 })
 
 export const LoginSchema = yup.object({

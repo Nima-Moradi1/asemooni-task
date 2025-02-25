@@ -79,7 +79,7 @@
     @apply flex flex-col items-center gap-y-5 w-full max-w-lg mx-auto *:text-sm *:md:text-base;
   }
   .h1 {
-    @apply text-xl lg:text-2xl font-bold mb-10;
+    @apply text-xl lg:text-2xl font-bold mb-5;
   } 
   .textField__input {
     @apply w-full text-xs lg:text-base py-3 px-4 rounded-xl border focus:border-primary  outline-none duration-200 transition-all ease-in-out hover:border-primary focus:outline-none;
