@@ -14,11 +14,13 @@ interface FileInputProps {
     validationSchema? : object
     errors? : any
     disabled? : boolean, 
-    register? : any
+    register? : any,
+    ref? :any
 }
 
 function FileInput({
     label,
+    ref,
     name , 
     id,
     value,
@@ -45,6 +47,7 @@ function FileInput({
             <input id={id} type="file" className="sr-only " disabled={disabled}
             name={name} value={value} onChange={onChange} required={isRequired}
             dir={dir}
+            ref={ref}
             {...rest}
             />
         </label>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import RHFTextField from '../ui/RHFTextField'
 import FileInput from '../ui/FileInput'
 import { Controller, useForm } from 'react-hook-form'
@@ -16,7 +16,6 @@ import { useRouter } from 'next/navigation'
 import { useImageUpload } from '@/hooks/React-Query/useImageUplaod'
 import Image from 'next/image'
 import { ArrowRightIcon, EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import useMoveBack from '@/hooks/useMoveBack'
 
 export interface SignupProps {
     firstName: string,
@@ -36,11 +35,19 @@ const SignupForm = () => {
     const [step , setStep] = React.useState<number>(1)
     const [preview, setPreview] = React.useState<string | null>(null)
     const [showPassword, setShowPassword] = React.useState(false);
-    const [phase1Data,setPhase1Data] = React.useState<Omit<SignupProps, 'image'> | null>(null)
+    const [phase2Data,setPhase2Data] = React.useState<Partial<SignupProps>>({})
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleRemoveImage = () => {
+        setPreview(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      };
 
     const {register, control, formState : {errors} , handleSubmit} = useForm<SignupProps>({
         mode:'onTouched' ,
-        resolver : yupResolver(SignupSchema)
+        resolver : yupResolver(SignupSchema(step) as any)
     })
     const uploadHandler = () => {
         const formData = new FormData()
@@ -52,7 +59,7 @@ const SignupForm = () => {
                 onSuccess : (data) => {
                     const thumbnail = data?.thumbnail
                    const signupData = {
-                          ...phase1Data,
+                          ...phase2Data,
                           image: thumbnail || ''
                    }
                      if (signupData.firstName && signupData.lastName && signupData.email && signupData.password && signupData.phoneNumber) {
@@ -83,11 +90,14 @@ const SignupForm = () => {
         console.log(errorMsg);
        }
     }
-    const stepsHandler = (data: Omit<SignupProps, 'image'>) => {
+    const step2Handler = (data:any) => {
         setStep(step + 1)
-        setPhase1Data(data)
+        setPhase2Data(data)
+        console.log(phase2Data);
     }
-    const moveBack = useMoveBack()
+    const moveBack = () => {
+        setStep(step - 1)
+    }
 
   return (
     <>
@@ -95,32 +105,49 @@ const SignupForm = () => {
       {step === 1 ? 
       <div className='w-full flex flex-col items-center justify-center'>
                 <h1 className='h1 md:mb-16'>نام نویسی در آسمونی</h1>
-      <form className='form grid grid-cols-1 md:grid-cols-2 gap-4 '
-         onSubmit={handleSubmit(stepsHandler)}>
-            <RHFTextField name='firstName' label='نام' register={register} errors={errors} isRequired/>
+      <form className='form'
+         onSubmit={handleSubmit(()=>setStep(step + 1))}>
+            <RHFTextField
+             dir='ltr' name='phoneNumber' label='شماره همراه' register={register} errors={errors} isRequired/>      
+            <Button
+            type='submit' className='w-full mt-5'>
+                {isSigning ? <SpinnerMini /> : 'مرحله بعد'}
+            </Button>
+        </form>
+      </div> 
+      : step === 2 ? 
+      <>
+      <div className='w-full'>
+      <div className='w-full mb-10 -mr-10 lg:mr-0'>
+        <Button variant='ghost' size='icon' onClick={moveBack} >
+            <ArrowRightIcon />
+        </Button>
+    </div>
+        <form className='form w-full' onSubmit={handleSubmit(step2Handler)}>
+        <RHFTextField name='firstName' label='نام' register={register} errors={errors} isRequired/>
             <RHFTextField name='lastName' label='نام خانوادگی' register={register} errors={errors} isRequired/>
-            <RHFTextField dir='ltr' name='phoneNumber' label='شماره همراه' register={register} errors={errors} isRequired/>      
-            <div className='relative '>
+            <RHFTextField dir='ltr' name='email' label='ایمیل' register={register} errors={errors} isRequired/>
+            <div className='relative w-full bg-red-300 '>
             <RHFTextField type={showPassword ? "text" : "password"}
              dir='ltr' name='password' label='پسورد' register={register} errors={errors} isRequired/>
-             <Button onClick={()=> setShowPassword(!showPassword)} size='icon' variant='ghost'
+             <Button
+             type='button'
+             onClick={()=> setShowPassword(!showPassword)} size='icon' variant='ghost'
              className={`${ errors['password'] ? "bottom-7 right-1" : "bottom-1 right-1 " } absolute flex items-center text-secondary-foreground lg:my-1`}
              >
                 {showPassword ? <EyeIcon/> : <EyeSlashIcon/>}
              </Button>
             </div>
-            <div className='md:col-span-2'>
-            <RHFTextField dir='ltr' name='email' label='ایمیل' register={register} errors={errors} isRequired/>
-            </div>
             <Button disabled={isSigning || Object.keys(errors).length > 0}
-            type='submit' className='w-full md:col-span-2 mt-5'>
+            type='submit' className='w-full md:col-span-2 mt-5 z-50'>
                 {isSigning ? <SpinnerMini /> : 'مرحله بعد'}
             </Button>
         </form>
-      </div> 
+      </div>
+      </> 
       : 
       <div className='w-full'>
-            <div className='w-full mb-10 -mr-10 lg:mr-0'>
+        <div className='w-full mb-10 -mr-10 lg:mr-0'>
         <Button variant='ghost' size='icon' onClick={moveBack} >
             <ArrowRightIcon />
         </Button>
@@ -133,10 +160,11 @@ const SignupForm = () => {
         rules={{ required: "عکس کاور پست الزامی است" }}
         render={({field : {value,onChange}}: { field: { value: string | any, onChange: (file: File | null) => void } })=> {
                 return <>
-                <FileInput id="image" label="انتخاب عکس پروفایل" name="image" 
+                <FileInput ref={fileInputRef}
+                id="image" label="انتخاب عکس پروفایل" name="image" 
                 isRequired
                 errors={errors}
-                isImageUploaded={image? true : false}
+                isImageUploaded={preview? true : false}
                 value={value?.fileName} onChange={(e : any)=> {
                     const file = e?.target.files[0] 
                     onChange(file)
@@ -154,7 +182,7 @@ const SignupForm = () => {
             {preview && <div className="relative aspect-video rounded-lg overflow-hidden mt-10 max-w-sm mx-auto">
                 <Image fill src={preview} alt="image" className="object-cover object-center"/>
                 <Button variant="destructive" className="size-8 absolute left-0"
-                onClick={()=> {setImage(null)}}>
+                onClick={handleRemoveImage}>
                     <XMarkIcon className="size-7"/>
                 </Button>
             </div>}
