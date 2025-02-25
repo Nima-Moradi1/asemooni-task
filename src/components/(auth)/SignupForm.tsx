@@ -15,7 +15,8 @@ import { useAuthStore, useUserStore } from '../../store/authStore'
 import { useRouter } from 'next/navigation'
 import { useImageUpload } from '@/hooks/React-Query/useImageUplaod'
 import Image from 'next/image'
-import { EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import useMoveBack from '@/hooks/useMoveBack'
 
 export interface SignupProps {
     firstName: string,
@@ -69,7 +70,7 @@ const SignupForm = () => {
 
     const signupHandler = (data:SignupProps) => {
        try {
-       const response = userSignup(data, {
+        userSignup(data, {
         onSuccess : (data : {token:string, data:SignupProps}) => {
             const userToken = data?.token
             useAuthStore.getState().setToken(userToken);
@@ -77,7 +78,6 @@ const SignupForm = () => {
             router.push('/')
         }
        })
-        console.log("response from signup handler : ",response);
        } catch (error : {response : {data : {message : string}}} | any) {
         const errorMsg = error?.response?.data?.message ;
         console.log(errorMsg);
@@ -86,10 +86,11 @@ const SignupForm = () => {
     const stepsHandler = (data: Omit<SignupProps, 'image'>) => {
         setStep(step + 1)
         setPhase1Data(data)
-        console.log('data from step1', data);
     }
+    const moveBack = useMoveBack()
 
   return (
+    <>
     <div className='w-2/3 flex flex-col items-center justify-center -mt-5 md:mt-0'>
       {step === 1 ? 
       <div className='w-full flex flex-col items-center justify-center'>
@@ -119,6 +120,11 @@ const SignupForm = () => {
       </div> 
       : 
       <div className='w-full'>
+            <div className='w-full mb-10 -mr-10 lg:mr-0'>
+        <Button variant='ghost' size='icon' onClick={moveBack} >
+            <ArrowRightIcon />
+        </Button>
+    </div>
        <div className='md:mt-8'>
         <form onSubmit={handleSubmit(uploadHandler)} className='form grid grid-cols-1 gap-4'>
         <Controller
@@ -127,7 +133,7 @@ const SignupForm = () => {
         rules={{ required: "عکس کاور پست الزامی است" }}
         render={({field : {value,onChange}}: { field: { value: string | any, onChange: (file: File | null) => void } })=> {
                 return <>
-                <FileInput id="image" label="انتخاب عکس" name="image" 
+                <FileInput id="image" label="انتخاب عکس پروفایل" name="image" 
                 isRequired
                 errors={errors}
                 isImageUploaded={image? true : false}
@@ -141,7 +147,7 @@ const SignupForm = () => {
             }}/> 
             <Button disabled={isUploading || Object.keys(errors).length > 0}
             type='submit' className='w-full md:col-span-2 mt-5'>
-                {isUploading ? <SpinnerMini /> : 'آپلود عکس'}
+                {isUploading ? <SpinnerMini /> : 'آپلود عکس و ثبت نام'}
             </Button>  
         </form>
             </div>
@@ -160,6 +166,8 @@ const SignupForm = () => {
             href='/auth/login'>ورود</Link>
         </div>
     </div>
+    </>
+    
   )
 }
 
