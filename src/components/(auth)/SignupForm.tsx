@@ -12,7 +12,6 @@ import Link from 'next/link'
 import { useUserSignup } from '@/hooks/React-Query/useSignup'
 import SpinnerMini from '../ui/SpinnerMini'
 import { useAuthStore, useUserStore } from '../../store/authStore'
-import { useRouter } from 'next/navigation'
 import { useImageUpload } from '@/hooks/React-Query/useImageUplaod'
 import Image from 'next/image'
 import { ArrowRightIcon, EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -30,7 +29,6 @@ const SignupForm = () => {
 
     const {isSigning,userSignup} = useUserSignup()
     const {isUploading,uploadImage} = useImageUpload()
-    const router = useRouter()
     const [image , setImage] = React.useState(null)
     const [step , setStep] = React.useState<number>(1)
     const [preview, setPreview] = React.useState<string | null>(null)
@@ -82,7 +80,7 @@ const SignupForm = () => {
             const userToken = data?.token
             useAuthStore.getState().setToken(userToken);
             useUserStore.getState().setUser(data.data);
-            router.push('/')
+            window.location.href = '/'
         }
        })
        } catch (error : {response : {data : {message : string}}} | any) {
