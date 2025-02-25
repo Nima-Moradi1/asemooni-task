@@ -1,10 +1,11 @@
 import React from 'react'
 
-interface Params {
-  postSlug: string;
+interface PageProps {
+  params: Promise<{ postSlug: string }>;
 }
 
-const SinglePostPage = async ({params}: { params: Params }) => {
+
+const SinglePostPage = async ({params}: PageProps) => {
     const {postSlug} = await params || {}
   return (
     <div>
