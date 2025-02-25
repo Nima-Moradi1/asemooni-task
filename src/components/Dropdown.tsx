@@ -10,17 +10,19 @@ import Link from 'next/link'
 import { SignupProps } from './(auth)/SignupForm'
 import { useAuthStore, useUserStore } from '../store/authStore'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 const Dropdown = ({user}:{user?:SignupProps | null}) => {
 
   const router = useRouter();
   const clearToken = useAuthStore((state) => state.clearToken);
   const clearUser = useUserStore((state) => state.clearUser);
+  const userImage = `${process.env.NEXT_PUBLIC_BASE_URL}${user?.image}` || ''
 
   const logoutHandler =  () => {
     try {
+      router.push('/auth/login');
       clearToken();
       clearUser();
-      router.push('/auth/login');
     } catch (error) {
       console.log(error);
     }
@@ -40,20 +42,18 @@ const Dropdown = ({user}:{user?:SignupProps | null}) => {
           <div className='flex items-center  py-2 gap-3 border-b w-full'>
             <div className='flex flex-col items-end'>
               <span>{user?.firstName}</span>
-              <span className='text-xs text-secondary-500'>{toPersianDigits(user?.phoneNumber)}</span>
+              <span className='text-xs'>{toPersianDigits(user?.phoneNumber)}</span>
             </div>
-            <div className='bg-secondary-100 size-8 flex items-center justify-center leading-none border border-secondary-200 p-3 rounded-full'
-            >
-              <span>
-              {(user?.firstName).charAt(0)}
-              </span>
+            <div>
+              <Image className='rounded-full'
+               width={50} height={50} alt='image' src={userImage || ''}/>
             </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link className='w-full'
          href={'/profile'}>
-        <DropdownMenuItem className='w-full flex-row-reverse cursor-pointer mb-1 hover:bg-secondary-100/30'>
+        <DropdownMenuItem className='w-full flex-row-reverse cursor-pointer mb-1'>
             <UserCircleIcon />
             <span>
             {'پروفایل'}
@@ -62,7 +62,7 @@ const Dropdown = ({user}:{user?:SignupProps | null}) => {
         </Link>
           <DropdownMenuItem
           onClick={logoutHandler}
-          className='w-full flex-row-reverse cursor-pointer hover:bg-secondary-100/30 hover:text-error'
+          className='w-full flex-row-reverse cursor-pointer hover:text-destructive'
           >
             <ArrowLeftEndOnRectangleIcon stroke='red'/>
             <span>خروج از حساب</span>
